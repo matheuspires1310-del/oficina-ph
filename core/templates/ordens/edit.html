@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% load br_filters %}
+
+{% block content %}
+<div class="container-fluid px-4">
+
+    <!-- TOPO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">
+            ✏️ Editar Ordem de Serviço #{{ ordem.id }}
+        </h3>
+        <a href="{% url 'ordem_list' %}" class="btn btn-outline-secondary">
+            ← Voltar
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- COLUNA ESQUERDA -->
+        <div class="col-lg-4">
+
+            <!-- DADOS DA ORDEM -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-bold">
+                    📄 Dados da Ordem
+                </div>
+                <div class="card-body">
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Cliente</label>
+                            {{ form.cliente }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Veículo</label>
+                            {{ form.veiculo }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">KM Atual</label>
+                            {{ form.km }}
+                            <small class="text-muted">Ex: 120.000</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Observações</label>
+                            {{ form.observacoes }}
+                            <small class="text-muted">
+                                Ex: barulho ao ligar, revisão preventiva, cliente solicitou orçamento
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Status</label>
+                            {{ form.status }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Orçamento</label>
+                            {{ form.orcamento }}
+                        </div>
+
+                        <button
+                          type="submit"
+                          name="save_ordem"
+                          class="btn btn-success w-100"
+                        >
+                          💾 Salvar Alterações
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- TOTAL -->
+            <div class="card border-success shadow-sm">
+                <div class="card-body text-center">
+                    <div class="fw-semibold text-muted mb-1">
+                        Total da Ordem
+                    </div>
+                    <h2 class="fw-bold text-success mb-0">
+                        {{ total_ordem|br_moeda }}
+                    </h2>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="col-lg-8">
+
+            <!-- SERVIÇOS -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">🔧 Serviços</span>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- FORM SERVIÇO -->
+                    <form method="post" class="row g-2 mb-3">
+                        {% csrf_token %}
+                        <div class="col-md-8">
+                            {{ servico_form.descricao }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ servico_form.valor }}
+                        </div>
+                        <div class="col-md-1 d-grid">
+                            <button type="submit" name="add_servico" class="btn btn-primary">
+                                    +
+                                  </button>
+                        </div>
+                    </form>
+
+                    <!-- LISTA -->
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th class="text-end">Valor</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in ordem.servicos.all %}
+                            <tr>
+                                <td>{{ s.descricao }}</td>
+                                <td class="text-end">{{ s.valor|br_moeda }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'servico_delete' s.id %}"
+                                       class="btn btn-sm btn-outline-danger">
+                                        🗑
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">
+                                    Nenhum serviço adicionado
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <!-- PEÇAS -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-bold">
+        🧰 Peças
+    </div>
+
+    <div class="card-body">
+
+        <!-- FORM ADICIONAR PEÇA -->
+        <form method="post" class="row g-2 align-items-end mb-3">
+            {% csrf_token %}
+
+            <div class="col-md-5">
+                {{ peca_form.nome }}
+            </div>
+
+            <div class="col-md-2">
+                {{ peca_form.quantidade }}
+            </div>
+
+            <div class="col-md-3">
+                {{ peca_form.valor_unitario }}
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button type="submit"
+                        name="add_peca"
+                        class="btn btn-primary">
+                    +
+                </button>
+            </div>
+        </form>
+
+        <!-- LISTA DE PEÇAS -->
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Peça</th>
+                        <th class="text-center">Qtd</th>
+                        <th class="text-end">Unitário</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in ordem.pecas.all %}
+                    <tr>
+                        <td>{{ p.nome }}</td>   
+                        <td class="text-center">{{ p.quantidade }}</td>
+                        <td class="text-end">R$ {{ p.valor_unitario|floatformat:2 }}</td>
+                        <td class="text-end fw-bold">R$ {{ p.total|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'peca_delete' p.id %}"
+                               class="btn btn-outline-danger btn-sm">
+                                🗑
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            Nenhuma peça adicionada
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

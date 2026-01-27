@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h3 class="mb-4">💰 Financeiro</h3>
+
+    <!-- FILTRO -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-3">
+            <input type="date" name="data_inicio" class="form-control" value="{{ data_inicio }}">
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="data_fim" class="form-control" value="{{ data_fim }}">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-success text-center">
+                <div class="card-body">
+                    <h6>Entradas</h6>
+                    <h4 class="text-success">R$ {{ total_entradas }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-danger text-center">
+                <div class="card-body">
+                    <h6>Saídas</h6>
+                    <h4 class="text-danger">R$ {{ total_saidas }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-primary text-center">
+                <div class="card-body">
+                    <h6>Saldo</h6>
+                    <h4 class="text-primary">R$ {{ saldo }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="d-flex gap-2">
+        <a href="#" class="btn btn-success">➕ Novo Lançamento</a>
+        <a href="#" class="btn btn-outline-secondary">📄 Relatórios</a>
+    </div>
+
+</div>
+{% endblock %}

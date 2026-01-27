@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 text-center">
+
+    <h4>🗑️ Excluir Ordem #{{ os.id }}</h4>
+    <p class="text-muted">Essa ação não pode ser desfeita.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger">Confirmar Exclusão</button>
+        <a href="{% url 'ordem_detail' os.id %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+</div>
+{% endblock %}

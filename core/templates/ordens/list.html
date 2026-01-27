@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- TOPO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">🛠 Ordens de Serviço</h3>
+
+        <a href="{% url 'ordem_create' %}" class="btn btn-primary">
+            + Nova Ordem de Serviço
+        </a>
+    </div>
+
+    <!-- TABELA -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Veículo</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for os in ordens %}
+                    <tr>
+                        <td class="fw-bold">{{ os.id }}</td>
+                        <td>{{ os.cliente }}</td>
+                        <td>{{ os.veiculo }}</td>
+                        <td>
+                            <span class="badge
+                                {% if os.status == 'aberta' %} bg-warning
+                                {% elif os.status == 'em_andamento' %} bg-info
+                                {% elif os.status == 'finalizada' %} bg-success
+                                {% else %} bg-secondary {% endif %}">
+                                {{ os.status }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'ordem_detail' os.id %}"
+                               class="btn btn-sm btn-outline-primary">
+                                Acompanhar
+                            </a>
+
+                            <a href="{% url 'ordem_edit' os.id %}"
+                               class="btn btn-sm btn-outline-warning">
+                                Editar
+                            </a>
+
+                            <a href="{% url 'ordem_delete' os.id %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Deseja excluir esta OS?')">
+                                Excluir
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            Nenhuma ordem de serviço encontrada
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

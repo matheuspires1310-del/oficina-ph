@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+
+    <h4 class="mb-4">✏️ Editar Ordem de Serviço #{{ os.id }}</h4>
+
+    <form method="post" class="card shadow-sm">
+        {% csrf_token %}
+        <div class="card-body row g-3">
+
+            <div class="col-md-6">
+                <label class="form-label">Cliente</label>
+                <select name="cliente" class="form-select">
+                    {% for c in clientes %}
+                        <option value="{{ c.id }}"
+                            {% if os.cliente.id == c.id %}selected{% endif %}>
+                            {{ c }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Veículo</label>
+                <input type="text"
+                       name="veiculo"
+                       class="form-control"
+                       value="{{ os.veiculo }}">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="aberta" {% if os.status == 'aberta' %}selected{% endif %}>Aberta</option>
+                    <option value="andamento" {% if os.status == 'andamento' %}selected{% endif %}>Em andamento</option>
+                    <option value="finalizada" {% if os.status == 'finalizada' %}selected{% endif %}>Finalizada</option>
+                    <option value="cancelada" {% if os.status == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Descrição</label>
+                <textarea name="descricao"
+                          class="form-control"
+                          rows="3">{{ os.descricao }}</textarea>
+            </div>
+
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'ordem_detail' os.id %}" class="btn btn-secondary">
+                Voltar
+            </a>
+            <button class="btn btn-warning">
+                Salvar Alterações
+            </button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

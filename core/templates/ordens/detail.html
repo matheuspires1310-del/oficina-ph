@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %} 
+
+<style>
+@media print {
+    .no-print { display: none; }
+    body { background: rgb(61, 70, 152); }
+    .card { border: none; }
+}
+</style>
+
+<div class="container mt-4">
+
+    <div class="card-body d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+        <img src="{% static 'img/logo.png' %}" style="max-height:70px" class="me-3">
+
+        <div>
+            <h4 class="mb-0 fw-bold">PH AUTO CENTER</h4>
+            <small>
+                CNPJ: 00.000.000/0001-00<br>
+                Tel: (62) 9368-8932
+            </small>
+        </div>
+    </div>
+
+    <div class="text-end">
+        <strong>ORDEM DE SERVIÇO</strong><br>
+        Nº {{ os.id }}
+    </div>
+</div>
+
+        <div class="card-body row">
+            <div class="col-md-6">
+                <p><strong>Cliente:</strong> {{ os.cliente }}</p>
+                <p><strong>Veículo:</strong> {{ os.veiculo }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>KM:</strong> {{ os.km }}</p>
+
+                <p>
+                    <strong>Data:</strong>
+                    {% if os.criado_em %}
+                        {{ os.criado_em|date:"d/m/Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MÃO DE OBRA ================= -->
+    <div class="card mb-3">
+        <div class="card-header"><strong>Mão de Obra</strong></div>
+
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th width="120">Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for servico in os.servicos.all %}
+                    <tr>
+                        <td>{{ servico.descricao }}</td>
+                        <td class="text-end">R$ {{ servico.valor }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center">Nenhum serviço lançado</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FORM ADD SERVIÇO -->
+        <div class="card-footer no-print">
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- 🔑 ISSO FAZ SALVAR -->
+                <input type="hidden" name="acao" value="add_servico">
+
+                <div class="row g-2">
+                    <div class="col-md-8">
+                        <input name="servico_descricao"
+                               class="form-control"
+                               placeholder="Descrição do serviço"
+                               required>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="servico_valor"
+                               type="number"
+                               step="0.01"
+                               class="form-control"
+                               placeholder="Valor"
+                               required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= PEÇAS ================= -->
+    <div class="card mb-3">
+        <div class="card-header"><strong>Peças</strong></div>
+
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th>Peça</th>
+                        <th width="80">Qtd</th>
+                        <th width="120">Unitário</th>
+                        <th width="120">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in os.pecas.all %}
+                    <tr>
+                        <td>{{ item.nome }}</td>
+                        <td class="text-center">{{ item.quantidade }}</td>
+                        <td class="text-end">R$ {{ item.valor_unitario }}</td>
+                        <td class="text-end">
+                            R$ {{ item.total }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">Nenhuma peça lançada</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FORM ADD PEÇA -->
+        <div class="card-footer no-print">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="acao" value="add_peca">
+
+        <div class="row g-2">
+            <div class="col-md-4">
+                <input name="peca_nome"
+                       class="form-control"
+                       placeholder="Nome da peça (ex: Óleo 5W30, Filtro de ar)"
+                       required>
+            </div>
+
+            <div class="col-md-2">
+                <input name="quantidade"
+                       type="number"
+                       class="form-control"
+                       placeholder="Qtd"
+                       min="1"
+                       required>
+            </div>
+
+            <div class="col-md-2">
+                <input name="valor_unitario"
+                       type="number"
+                       step="0.01"
+                       class="form-control"
+                       placeholder="Valor"
+                       required>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit"
+                        class="btn btn-primary w-100">
+                    Adicionar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+    <!-- ================= TOTAL ================= -->
+    <div class="card mb-4">
+        <div class="card-body text-end">
+            <h4>Total da OS: <strong>R$ {{ os.total }}</strong></h4>
+        </div>
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="no-print text-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar</a>
+        <button onclick="window.print()" class="btn btn-outline-primary">Imprimir / PDF</button>
+
+        {% if os.status != 'finalizada' %}
+        <a href="{% url 'ordem_finalizar' os.id %}" class="btn btn-success">
+            Finalizar OS
+        </a>
+        {% endif %}
+    </div>
+
+</div>
+<div class="text-center mt-5">
+    <hr>
+    <small>
+        Orçamento válido por 7 dias • Valores sujeitos a alteração após desmontagem<br>
+        Assinatura do responsável: ___________________________
+    </small>
+</div>
+{% endblock %}

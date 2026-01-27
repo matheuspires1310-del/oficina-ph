@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3>Ordens de Serviço — {{ cliente.nome }}</h3>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Veículo</th>
+                <th>Status</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for os in ordens %}
+            <tr>
+                <td>{{ os.id }}</td>
+                <td>{{ os.veiculo }}</td>
+                <td>{{ os.status }}</td>
+                <td>{{ os.created_at|date:"d/m/Y" }}</td>
+                <td>
+                    <a href="{% url 'ordem_detail' os.id %}"
+                       class="btn btn-sm btn-info">
+                        Abrir
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">
+                    Nenhuma OS encontrada
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
