@@ -35,6 +35,13 @@ ALLOWED_HOSTS = [
     '.railway.app',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://oficina-ph-production.up.railway.app',
+]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 
 
 
