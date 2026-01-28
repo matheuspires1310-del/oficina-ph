@@ -30,7 +30,11 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    'oficina-ph-production.up.railway.app',
+    '.railway.app',
+]
+
 
 
 
